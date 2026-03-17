@@ -13,7 +13,6 @@ interface UseReviewReturn {
   submitStream: (code: string, mode: ReviewMode, language: string) => Promise<void>;
   submitSync:   (code: string, mode: ReviewMode, language: string) => Promise<void>;
   reset:        () => void;
-  restore:      (saved: ReviewResult) => void;
 }
 
 const BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -41,9 +40,9 @@ function cleanAndParse(raw: string): ReviewResult | null {
   }
 }
 
-export function useReview(initialResult: ReviewResult | null = null): UseReviewReturn {
-  const [status, setStatus]       = useState<ReviewStatus>(initialResult ? "done" : "idle");
-  const [result, setResult]       = useState<ReviewResult | null>(initialResult);
+export function useReview(): UseReviewReturn {
+  const [status, setStatus]       = useState<ReviewStatus>("idle");
+  const [result, setResult]       = useState<ReviewResult | null>(null);
   const [rawChunks, setRawChunks] = useState("");
   const [error, setError]         = useState<string | null>(null);
   const abortRef                  = useRef<AbortController | null>(null);
@@ -184,11 +183,5 @@ export function useReview(initialResult: ReviewResult | null = null): UseReviewR
     setError(null);
   }
 
-  function restore(saved: ReviewResult) {
-    setResult(saved);
-    setStatus("done");
-    setError(null);
-  }
-
-  return { status, result, rawChunks, error, submitStream, submitSync, reset, restore };
+  return { status, result, rawChunks, error, submitStream, submitSync, reset };
 }
