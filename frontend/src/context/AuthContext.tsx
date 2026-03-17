@@ -3,10 +3,10 @@ import type { ReactNode } from "react";
 import api from "../lib/api";
 
 interface User {
-  _id: string;
+  _id:      string;
   username: string;
-  email: string;
-  role: "user" | "admin";
+  email:    string;
+  role:     "user" | "admin";
   createdAt: string;
 }
 
@@ -25,7 +25,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get("/api/auth/me")
+    // Try refresh first so access token is always fresh on page load,
+    // then fetch the current user. If both fail the user is logged out.
+    api.post("/api/auth/refresh", {})
+      .then(() => api.get("/api/auth/me"))
       .then((r) => setUser(r.data.data.user))
       .catch(() => setUser(null))
       .finally(() => setLoading(false));

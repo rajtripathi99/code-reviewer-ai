@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
+  baseURL:         import.meta.env.VITE_API_URL || "http://localhost:5000",
   withCredentials: true,
 });
 
@@ -10,7 +10,6 @@ api.interceptors.response.use(
   async (err) => {
     const original = err.config;
 
-    // Don't intercept auth endpoints — avoids infinite loops
     const isAuthEndpoint =
       original.url?.includes("/api/auth/me") ||
       original.url?.includes("/api/auth/login") ||
@@ -26,7 +25,7 @@ api.interceptors.response.use(
         );
         return api(original);
       } catch {
-        // Refresh failed — let the component handle the 401, don't force redirect
+        window.location.href = "/login";
       }
     }
 
