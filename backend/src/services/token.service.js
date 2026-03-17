@@ -7,7 +7,7 @@ export const REFRESH_COOKIE = "refresh_token";
 const cookieBase = {
   httpOnly: true,
   secure:   env.COOKIE_SECURE,
-  sameSite: "lax",
+  sameSite: env.IS_PROD ? "none" : "lax",
   path:     "/",
 };
 
@@ -20,17 +20,17 @@ export function setAuthCookies(res, user) {
 
   res.cookie(ACCESS_COOKIE, signAccessToken(payload), {
     ...cookieBase,
-    maxAge: 15 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
   res.cookie(REFRESH_COOKIE, signRefreshToken({ id: user._id }), {
     ...cookieBase,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    path:   "/api/auth/refresh",
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    path:   env.IS_PROD ? "/" : "/api/auth/refresh",
   });
 }
 
 export function clearAuthCookies(res) {
   res.clearCookie(ACCESS_COOKIE,  { ...cookieBase });
-  res.clearCookie(REFRESH_COOKIE, { ...cookieBase, path: "/api/auth/refresh" });
+  res.clearCookie(REFRESH_COOKIE, { ...cookieBase, path: env.IS_PROD ? "/" : "/api/auth/refresh" });
 }

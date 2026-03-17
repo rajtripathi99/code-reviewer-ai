@@ -4,6 +4,7 @@ import {
   setAuthCookies,
   clearAuthCookies,
   signAccessToken,
+  signRefreshToken,
   verifyToken,
   ACCESS_COOKIE,
   REFRESH_COOKIE,
@@ -77,14 +78,23 @@ export async function refresh(req, res) {
       return unauthorized(res, "User not found.");
     }
 
-    const newToken = signAccessToken({ id: user._id, username: user.username, role: user.role });
+    const newAccessToken  = signAccessToken({ id: user._id, username: user.username, role: user.role });
+    const newRefreshToken = signRefreshToken({ id: user._id });
 
-    res.cookie(ACCESS_COOKIE, newToken, {
+    res.cookie(ACCESS_COOKIE, newAccessToken, {
       httpOnly: true,
       secure:   env.COOKIE_SECURE,
-      sameSite: "lax",
+      sameSite: env.IS_PROD ? "none" : "lax",
       path:     "/",
-      maxAge:   15 * 60 * 1000,
+      maxAge:   7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.cookie(REFRESH_COOKIE, newRefreshToken, {
+      httpOnly: true,
+      secure:   env.COOKIE_SECURE,
+      sameSite: env.IS_PROD ? "none" : "lax",
+      path:     env.IS_PROD ? "/" : "/api/auth/refresh",
+      maxAge:   30 * 24 * 60 * 60 * 1000,
     });
 
     return ok(res, { message: "Token refreshed." });
