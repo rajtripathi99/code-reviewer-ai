@@ -41,9 +41,9 @@ function cleanAndParse(raw: string): ReviewResult | null {
   }
 }
 
-export function useReview(): UseReviewReturn {
-  const [status, setStatus]       = useState<ReviewStatus>("idle");
-  const [result, setResult]       = useState<ReviewResult | null>(null);
+export function useReview(initialResult: ReviewResult | null = null): UseReviewReturn {
+  const [status, setStatus]       = useState<ReviewStatus>(initialResult ? "done" : "idle");
+  const [result, setResult]       = useState<ReviewResult | null>(initialResult);
   const [rawChunks, setRawChunks] = useState("");
   const [error, setError]         = useState<string | null>(null);
   const abortRef                  = useRef<AbortController | null>(null);

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button }     from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -27,21 +27,15 @@ function loadSession() {
 }
 
 export default function ReviewPage() {
-  const saved = loadSession();
+  // Load saved session once using a ref so it doesn't re-read on every render
+  const savedRef = useRef(loadSession());
+  const saved = savedRef.current;
 
   const [code, setCode]         = useState(saved?.code ?? "");
   const [mode, setMode]         = useState<ReviewMode>(saved?.mode ?? "full");
   const [language, setLanguage] = useState(saved?.language ?? "Auto detect");
 
-  const { status: reviewStatus, result, rawChunks, error, submitStream, reset, restore } = useReview();
-
-  // Restore saved result on mount
-  useEffect(() => {
-    if (saved?.result) {
-      restore(saved.result);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { status: reviewStatus, result, rawChunks, error, submitStream, reset } = useReview(saved?.result ?? null);
 
   // Save to sessionStorage whenever review completes
   useEffect(() => {
