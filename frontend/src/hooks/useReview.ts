@@ -47,6 +47,61 @@ export function useReview(): UseReviewReturn {
   const [error, setError]         = useState<string | null>(null);
   const abortRef                  = useRef<AbortController | null>(null);
 
+  async function readStream(response: Response, code: string, mode: ReviewMode, language: string) {
+    const reader  = response.body!.getReader();
+    const decoder = new TextDecoder();
+    let   buffer  = "";
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop() ?? "";
+
+      for (const line of lines) {
+        if (line.startsWith("event: error")) {
+          setError("Review generation failed.");
+          setStatus("error");
+          return;
+        }
+
+        if (!line.startsWith("data:")) continue;
+
+        let parsed: Record<string, unknown>;
+        try {
+          parsed = JSON.parse(line.slice(5).trim());
+        } catch {
+          continue;
+        }
+
+        if (typeof parsed.chunk === "string") {
+          setRawChunks((p) => p + (parsed.chunk as string));
+        }
+
+        if (typeof parsed.fullText === "string") {
+          const extracted = cleanAndParse(parsed.fullText);
+          if (extracted) {
+            setResult(extracted);
+            setStatus("done");
+          } else {
+            setError("Streaming parse failed. Retrying with sync…");
+            try {
+              const r = await api.post("/api/review/sync", { code, mode, language });
+              setResult(r.data.data.review as ReviewResult);
+              setStatus("done");
+              setError(null);
+            } catch {
+              setError("Could not parse the review response. Please try again.");
+              setStatus("error");
+            }
+          }
+        }
+      }
+    }
+  }
+
   async function submitStream(code: string, mode: ReviewMode, language: string) {
     setStatus("streaming");
     setResult(null);
@@ -57,7 +112,7 @@ export function useReview(): UseReviewReturn {
     abortRef.current = controller;
 
     try {
-      const res = await fetch(`${BASE}/api/review/stream`, {
+      let res = await fetch(`${BASE}/api/review/stream`, {
         method:      "POST",
         headers:     { "Content-Type": "application/json" },
         credentials: "include",
@@ -65,67 +120,37 @@ export function useReview(): UseReviewReturn {
         body:        JSON.stringify({ code, mode, language }),
       });
 
+      // If 401, try refreshing the token and retry once
+      if (res.status === 401) {
+        try {
+          await fetch(`${BASE}/api/auth/refresh`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: "{}",
+          });
+        } catch {
+          setError("Session expired. Please log in again.");
+          setStatus("error");
+          return;
+        }
+
+        res = await fetch(`${BASE}/api/review/stream`, {
+          method:      "POST",
+          headers:     { "Content-Type": "application/json" },
+          credentials: "include",
+          signal:      controller.signal,
+          body:        JSON.stringify({ code, mode, language }),
+        });
+      }
+
       if (!res.ok) {
         setError(`Server error: ${res.status}`);
         setStatus("error");
         return;
       }
 
-      const reader  = res.body!.getReader();
-      const decoder = new TextDecoder();
-      let   buffer  = "";
-
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() ?? "";
-
-        for (const line of lines) {
-          if (line.startsWith("event: error")) {
-            setError("Review generation failed.");
-            setStatus("error");
-            return;
-          }
-
-          if (!line.startsWith("data:")) continue;
-
-          let parsed: Record<string, unknown>;
-          try {
-            parsed = JSON.parse(line.slice(5).trim());
-          } catch {
-            continue;
-          }
-
-          // Accumulate streaming text for the UI placeholder
-          if (typeof parsed.chunk === "string") {
-            setRawChunks((p) => p + (parsed.chunk as string));
-          }
-
-          // "done" event from backend — fullText has the complete response
-          if (typeof parsed.fullText === "string") {
-            const extracted = cleanAndParse(parsed.fullText);
-            if (extracted) {
-              setResult(extracted);
-              setStatus("done");
-            } else {
-              // Parse failed — fall back to sync endpoint which has better error handling
-              setError("Streaming parse failed. Retrying with sync…");
-              try {
-                const r = await api.post("/api/review/sync", { code, mode, language });
-                setResult(r.data.data.review as ReviewResult);
-                setStatus("done");
-                setError(null);
-              } catch {
-                setError("Could not parse the review response. Please try again.");
-                setStatus("error");
-              }
-            }
-          }
-        }
-      }
+      await readStream(res, code, mode, language);
     } catch (err: unknown) {
       if (err instanceof Error && err.name !== "AbortError") {
         setError("Connection failed. Please try again.");
