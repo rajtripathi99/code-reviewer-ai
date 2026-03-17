@@ -10,7 +10,7 @@ import { notFound, errorHandler } from "./src/middleware/error.middleware.js";
 const app = express();
 
 app.use(cors({
-  origin:         env.CLIENT_URL,
+  origin:         env.IS_PROD ? env.CLIENT_URL : true,
   credentials:    true,
   methods:        ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
