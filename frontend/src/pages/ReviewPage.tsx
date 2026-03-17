@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button }     from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -16,12 +16,39 @@ const LANGUAGES = [
   "Rust", "C", "C++", "C#", "PHP", "Ruby", "Swift", "Kotlin", "SQL",
 ];
 
-export default function ReviewPage() {
-  const [code, setCode]         = useState("");
-  const [mode, setMode]         = useState<ReviewMode>("full");
-  const [language, setLanguage] = useState("Auto detect");
+const STORAGE_KEY = "codereview_session";
 
-  const { status: reviewStatus, result, rawChunks, error, submitStream, reset } = useReview();
+function loadSession() {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch { return null; }
+}
+
+export default function ReviewPage() {
+  const saved = loadSession();
+
+  const [code, setCode]         = useState(saved?.code ?? "");
+  const [mode, setMode]         = useState<ReviewMode>(saved?.mode ?? "full");
+  const [language, setLanguage] = useState(saved?.language ?? "Auto detect");
+
+  const { status: reviewStatus, result, rawChunks, error, submitStream, reset, restore } = useReview();
+
+  // Restore saved result on mount
+  useEffect(() => {
+    if (saved?.result) {
+      restore(saved.result);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Save to sessionStorage whenever review completes
+  useEffect(() => {
+    if (reviewStatus === "done" && result) {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ code, mode, language, result }));
+    }
+  }, [reviewStatus, result, code, mode, language]);
 
   const isRunning = reviewStatus === "streaming" || reviewStatus === "loading";
 
@@ -33,6 +60,7 @@ export default function ReviewPage() {
   function handleReset() {
     reset();
     setCode("");
+    sessionStorage.removeItem(STORAGE_KEY);
   }
 
   return (

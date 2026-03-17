@@ -13,6 +13,7 @@ interface UseReviewReturn {
   submitStream: (code: string, mode: ReviewMode, language: string) => Promise<void>;
   submitSync:   (code: string, mode: ReviewMode, language: string) => Promise<void>;
   reset:        () => void;
+  restore:      (saved: ReviewResult) => void;
 }
 
 const BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -183,5 +184,11 @@ export function useReview(): UseReviewReturn {
     setError(null);
   }
 
-  return { status, result, rawChunks, error, submitStream, submitSync, reset };
+  function restore(saved: ReviewResult) {
+    setResult(saved);
+    setStatus("done");
+    setError(null);
+  }
+
+  return { status, result, rawChunks, error, submitStream, submitSync, reset, restore };
 }
