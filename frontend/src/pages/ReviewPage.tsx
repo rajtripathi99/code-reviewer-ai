@@ -78,10 +78,10 @@ export default function ReviewPage() {
         </div>
 
         {/* Split panel */}
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-1 flex-col lg:flex-row overflow-hidden">
 
           {/* Left — code editor */}
-          <div className="flex w-1/2 flex-col overflow-hidden border-r p-4">
+          <div className="flex w-full lg:w-1/2 flex-col overflow-hidden border-b lg:border-b-0 lg:border-r p-4 min-h-[40vh] lg:min-h-0">
             <div className="mb-2 flex items-center justify-between shrink-0">
               <span className="text-xs font-medium text-muted-foreground">Code</span>
               {code && (
@@ -96,7 +96,7 @@ export default function ReviewPage() {
           </div>
 
           {/* Right — review results */}
-          <div className="flex w-1/2 flex-col overflow-hidden">
+          <div className="flex w-full lg:w-1/2 flex-col overflow-hidden min-h-[50vh] lg:min-h-0">
             <ScrollArea className="h-full">
               <ReviewPanel
                 reviewStatus={reviewStatus}

@@ -37,18 +37,20 @@ export default function ReviewDetailPage() {
       <Navbar />
 
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8 sm:px-6">
-        <div className="mb-6 flex items-center gap-3">
-          <Button asChild size="icon" variant="ghost" className="size-8">
-            <Link to="/history"><ArrowLeft className="size-4" /></Link>
-          </Button>
-          <div>
-            <h1 className="text-lg font-semibold">Review Detail</h1>
-            {review && (
-              <p className="text-xs text-muted-foreground">
-                {new Date(review.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
-                {review.language ? ` · ${review.language}` : ""}
-              </p>
-            )}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-3">
+            <Button asChild size="icon" variant="ghost" className="size-8 shrink-0">
+              <Link to="/history"><ArrowLeft className="size-4" /></Link>
+            </Button>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg font-semibold truncate">Review Detail</h1>
+              {review && (
+                <p className="text-xs text-muted-foreground truncate">
+                  {new Date(review.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
+                  {review.language ? ` · ${review.language}` : ""}
+                </p>
+              )}
+            </div>
           </div>
         </div>
 

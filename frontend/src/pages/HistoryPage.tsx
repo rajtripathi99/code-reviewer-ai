@@ -119,40 +119,44 @@ export default function HistoryPage() {
               {reviews.map((review) => (
                 <div
                   key={review._id}
-                  className="flex items-center gap-4 rounded-xl border bg-card px-4 py-3 hover:bg-accent/30 transition-colors"
+                  className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-xl border bg-card px-4 py-3 hover:bg-accent/30 transition-colors"
                 >
-                  <div className={cn("w-8 text-center text-lg font-bold tabular-nums", scoreColor(review.result?.score ?? 0))}>
-                    {review.result?.score ?? "—"}
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant="outline" className="text-[10px] font-medium">
-                        {MODE_LABELS[review.mode] ?? review.mode}
-                      </Badge>
-                      {(review.language || review.result?.language) && (
-                        <span className="text-xs text-muted-foreground">{review.language || review.result?.language}</span>
-                      )}
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
+                    <div className={cn("w-8 text-center text-lg font-bold tabular-nums shrink-0", scoreColor(review.result?.score ?? 0))}>
+                      {review.result?.score ?? "—"}
                     </div>
-                    <p className="mt-0.5 text-xs text-muted-foreground truncate">
-                      {review.result?.summary ?? "No summary"}
-                    </p>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Badge variant="outline" className="text-[10px] font-medium">
+                          {MODE_LABELS[review.mode] ?? review.mode}
+                        </Badge>
+                        {(review.language || review.result?.language) && (
+                          <span className="text-xs text-muted-foreground">{review.language || review.result?.language}</span>
+                        )}
+                      </div>
+                      <p className="mt-0.5 text-xs text-muted-foreground truncate">
+                        {review.result?.summary ?? "No summary"}
+                      </p>
+                    </div>
                   </div>
 
-                  <p className="shrink-0 text-xs text-muted-foreground">{formatDate(review.createdAt)}</p>
+                  <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-4 shrink-0 mt-2 sm:mt-0 pt-2 sm:pt-0 border-t sm:border-0">
+                    <p className="text-xs text-muted-foreground">{formatDate(review.createdAt)}</p>
 
-                  <div className="flex items-center gap-1 shrink-0">
-                    <Button asChild size="icon" variant="ghost" className="size-8">
-                      <Link to={`/history/${review._id}`}><Eye className="size-3.5" /></Link>
-                    </Button>
-                    <Button
-                      size="icon" variant="ghost"
-                      className="size-8 text-muted-foreground hover:text-destructive"
-                      onClick={() => handleDelete(review._id)}
-                      disabled={deleting === review._id}
-                    >
-                      <Trash2 className="size-3.5" />
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <Button asChild size="icon" variant="ghost" className="size-8">
+                        <Link to={`/history/${review._id}`}><Eye className="size-3.5" /></Link>
+                      </Button>
+                      <Button
+                        size="icon" variant="ghost"
+                        className="size-8 text-muted-foreground hover:text-destructive"
+                        onClick={() => handleDelete(review._id)}
+                        disabled={deleting === review._id}
+                      >
+                        <Trash2 className="size-3.5" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}

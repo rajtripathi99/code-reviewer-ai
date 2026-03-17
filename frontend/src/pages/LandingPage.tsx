@@ -133,15 +133,15 @@ export default function LandingPage() {
               ))}
             </div>
             <div className="ml-auto flex items-center gap-2">
-              <div className="h-6 w-24 rounded-md bg-muted" />
+              <div className="hidden sm:block h-6 w-24 rounded-md bg-muted" />
               <div className="h-6 w-16 rounded-md bg-primary/80" />
             </div>
           </div>
 
           {/* Fake split panel */}
-          <div className="grid grid-cols-2 min-h-[280px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 min-h-[280px]">
             {/* Left — fake code */}
-            <div className="border-r p-4 font-mono text-xs text-muted-foreground leading-6">
+            <div className="border-b md:border-b-0 md:border-r p-4 font-mono text-xs text-muted-foreground leading-6 overflow-x-auto">
               <div className="flex gap-4">
                 <div className="flex flex-col items-end text-muted-foreground/40 select-none w-4">
                   {[1,2,3,4,5,6,7,8,9,10].map(n => <span key={n}>{n}</span>)}
@@ -178,7 +178,7 @@ export default function LandingPage() {
               </div>
 
               <div className="rounded-lg border p-2.5">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded border border-red-500/20 bg-red-500/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-red-500">Critical</span>
                   <span className="text-xs font-medium">SQL Injection via string concat</span>
                 </div>
@@ -186,7 +186,7 @@ export default function LandingPage() {
               </div>
 
               <div className="rounded-lg border p-2.5">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded border border-yellow-500/20 bg-yellow-500/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-yellow-500">Warning</span>
                   <span className="text-xs font-medium">Missing error handling on db.query</span>
                 </div>

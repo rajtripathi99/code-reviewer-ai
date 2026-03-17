@@ -132,10 +132,10 @@ export default function ReviewPanel({ reviewStatus, result, rawChunks = "", erro
 
   return (
     <div className="space-y-4 p-4">
-      <div className="flex items-start gap-4 rounded-xl border bg-card p-4">
+      <div className="flex flex-col sm:flex-row sm:items-start items-center text-center sm:text-left gap-4 rounded-xl border bg-card p-4">
         <ScoreRing score={result.score ?? 0} />
         <div className="flex-1 min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
             <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">{result.language}</span>
             {criticalCount > 0 && (
               <span className="rounded-md bg-red-500/10 px-2 py-0.5 text-xs font-medium text-red-500">{criticalCount} critical</span>
