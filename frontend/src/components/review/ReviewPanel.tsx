@@ -131,7 +131,7 @@ export default function ReviewPanel({ reviewStatus, result, rawChunks = "", erro
   const warningCount  = result.issues?.filter((i) => i.severity === "warning").length  ?? 0;
 
   return (
-    <div className="space-y-4 p-4">
+    <div className="space-y-4 p-3 sm:p-4 max-w-full overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:items-start items-center text-center sm:text-left gap-4 rounded-xl border bg-card p-4">
         <ScoreRing score={result.score ?? 0} />
         <div className="flex-1 min-w-0">

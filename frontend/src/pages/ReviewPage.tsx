@@ -36,19 +36,19 @@ export default function ReviewPage() {
   }
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-background">
+    <div className="flex h-[100dvh] flex-col overflow-hidden bg-background">
       <Navbar />
 
       <div className="flex flex-1 flex-col overflow-hidden">
 
         {/* Toolbar */}
-        <div className="border-b bg-card/50 px-4 py-2.5 shrink-0">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="border-b bg-card/50 px-3 sm:px-4 py-2 sm:py-2.5 shrink-0">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             <ModeSelector value={mode} onChange={setMode} />
 
             <div className="ml-auto flex items-center gap-2 shrink-0">
               <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger className="h-8 w-36 text-xs">
+                <SelectTrigger className="h-8 w-28 sm:w-36 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -81,7 +81,7 @@ export default function ReviewPage() {
         <div className="flex flex-1 flex-col lg:flex-row overflow-hidden">
 
           {/* Left — code editor */}
-          <div className="flex w-full lg:w-1/2 flex-col overflow-hidden border-b lg:border-b-0 lg:border-r p-4 min-h-[40vh] lg:min-h-0">
+          <div className="flex w-full lg:w-1/2 flex-col overflow-hidden border-b lg:border-b-0 lg:border-r p-3 sm:p-4 min-h-[35vh] lg:min-h-0">
             <div className="mb-2 flex items-center justify-between shrink-0">
               <span className="text-xs font-medium text-muted-foreground">Code</span>
               {code && (
@@ -96,7 +96,7 @@ export default function ReviewPage() {
           </div>
 
           {/* Right — review results */}
-          <div className="flex w-full lg:w-1/2 flex-col overflow-hidden min-h-[50vh] lg:min-h-0">
+          <div className="flex w-full lg:w-1/2 flex-col overflow-hidden min-h-[40vh] lg:min-h-0">
             <ScrollArea className="h-full">
               <ReviewPanel
                 reviewStatus={reviewStatus}

@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Code2, History, LogOut } from "lucide-react";
+import { Code2, History, LogOut, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -40,7 +40,7 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <nav className="flex items-center gap-1">
+        <nav className="hidden sm:flex items-center gap-1">
           {NAV_LINKS.map(({ to, label }) => (
             <Link key={to} to={to}>
               <Button
@@ -73,6 +73,11 @@ export default function Navbar() {
               <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
             </div>
             <DropdownMenuSeparator />
+            <DropdownMenuItem asChild className="sm:hidden">
+              <Link to="/review" className="cursor-pointer">
+                <Sparkles className="mr-2 size-4" /> Review
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link to="/history" className="cursor-pointer">
                 <History className="mr-2 size-4" /> History

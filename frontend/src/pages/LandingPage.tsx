@@ -71,7 +71,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero */}
-      <section className="mx-auto max-w-6xl px-4 pt-20 pb-16 sm:px-6 text-center">
+      <section className="mx-auto max-w-6xl px-4 pt-12 sm:pt-20 pb-12 sm:pb-16 sm:px-6 text-center">
         <div className="flex justify-center mb-6">
           <span className="inline-flex items-center gap-1.5 rounded-full border bg-muted/50 px-3 py-1 text-xs text-muted-foreground">
             <Sparkles className="size-3 text-primary" />
@@ -85,7 +85,7 @@ export default function LandingPage() {
           <span className="text-primary">teach you something</span>
         </h1>
 
-        <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
+        <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
           Paste any code snippet and get a structured AI review — bugs, severity levels,
           performance issues, and a fully rewritten version. Streamed live.
         </p>
@@ -116,23 +116,23 @@ export default function LandingPage() {
       <section className="mx-auto max-w-5xl px-4 sm:px-6 pb-20">
         <div className="overflow-hidden rounded-2xl border bg-card shadow-xl">
           {/* Fake toolbar */}
-          <div className="flex items-center gap-2 border-b bg-muted/30 px-4 py-3">
-            <div className="flex gap-1.5">
-              <div className="size-3 rounded-full bg-red-400/60" />
-              <div className="size-3 rounded-full bg-yellow-400/60" />
-              <div className="size-3 rounded-full bg-green-400/60" />
+          <div className="flex items-center gap-2 border-b bg-muted/30 px-3 sm:px-4 py-2.5 sm:py-3 overflow-x-auto">
+            <div className="flex gap-1.5 shrink-0">
+              <div className="size-2.5 sm:size-3 rounded-full bg-red-400/60" />
+              <div className="size-2.5 sm:size-3 rounded-full bg-yellow-400/60" />
+              <div className="size-2.5 sm:size-3 rounded-full bg-green-400/60" />
             </div>
-            <div className="flex gap-1 ml-2">
+            <div className="hidden sm:flex gap-1 ml-2">
               {MODES.map((m) => (
                 <span key={m.label} className={cn(
-                  "rounded-md px-2.5 py-1 text-[11px] font-medium",
+                  "rounded-md px-2.5 py-1 text-[11px] font-medium whitespace-nowrap",
                   m.label === "Security" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                 )}>
                   {m.label}
                 </span>
               ))}
             </div>
-            <div className="ml-auto flex items-center gap-2">
+            <div className="ml-auto flex items-center gap-2 shrink-0">
               <div className="hidden sm:block h-6 w-24 rounded-md bg-muted" />
               <div className="h-6 w-16 rounded-md bg-primary/80" />
             </div>
@@ -158,7 +158,7 @@ export default function LandingPage() {
             </div>
 
             {/* Right — fake results */}
-            <div className="p-4 space-y-3">
+            <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
               <div className="flex items-start gap-3 rounded-xl border bg-background p-3">
                 <div className="relative flex items-center justify-center">
                   <svg width="52" height="52" className="-rotate-90">
