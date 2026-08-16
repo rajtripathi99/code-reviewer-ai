@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import type { ReviewIssue, IssueSeverity } from "./ReviewPanel";
 
 const SEVERITY_MAP: Record<IssueSeverity, { label: string; cls: string }> = {
-  critical:   { label: "Critical",   cls: "bg-red-500/10    text-red-500    border-red-500/20"    },
-  warning:    { label: "Warning",    cls: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" },
-  info:       { label: "Info",       cls: "bg-blue-500/10   text-blue-500   border-blue-500/20"   },
-  suggestion: { label: "Suggestion", cls: "bg-violet-500/10 text-violet-500 border-violet-500/20" },
+  critical:   { label: "Critical",   cls: "border-red-300    bg-red-100    text-red-500"    },
+  warning:    { label: "Warning",    cls: "border-yellow-300 bg-yellow-100 text-yellow-500" },
+  info:       { label: "Info",       cls: "border-blue-300   bg-blue-100   text-blue-500"   },
+  suggestion: { label: "Suggestion", cls: "border-violet-300 bg-violet-100 text-violet-500" },
 };
 
 export default function IssueCard({ issue }: { issue: ReviewIssue }) {
@@ -16,28 +15,32 @@ export default function IssueCard({ issue }: { issue: ReviewIssue }) {
   const sev = SEVERITY_MAP[issue.severity] ?? SEVERITY_MAP.info;
 
   return (
-    <div className={cn("rounded-lg border bg-card transition-all", open && "shadow-sm")}>
+    <div className={cn("overflow-hidden rounded-[10px] border border-gray-200 bg-gray-50")}>
       <button
         onClick={() => setOpen((p) => !p)}
-        className="flex w-full items-start gap-3 p-3 text-left"
+        className="flex w-full items-center justify-between gap-4 p-4 text-left"
       >
-        <Badge variant="outline" className={cn("mt-0.5 shrink-0 text-[10px] font-semibold uppercase tracking-wide", sev.cls)}>
-          {sev.label}
-        </Badge>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium leading-snug">{issue.title}</p>
-          {issue.line && <p className="mt-0.5 text-xs text-muted-foreground">Line {issue.line}</p>}
+        <div className="flex min-w-0 items-center gap-4">
+          <span className={cn("shrink-0 rounded-[10px] border px-2 py-0.5 text-xs uppercase tracking-tight", sev.cls)}>
+            {sev.label}
+          </span>
+          <div className="min-w-0">
+            <p className="truncate text-sm tracking-tight text-gray-900">{issue.title}</p>
+            {issue.line != null && (
+              <p className="text-[10px] tracking-tight text-gray-400">Line {issue.line}</p>
+            )}
+          </div>
         </div>
-        <ChevronDown className={cn("mt-0.5 size-4 shrink-0 text-muted-foreground transition-transform", open && "rotate-180")} />
+        <ChevronDown className={cn("size-4 shrink-0 text-gray-400 transition-transform", open && "rotate-180")} />
       </button>
 
       {open && (
-        <div className="border-t px-3 pb-3 pt-2.5 space-y-2">
-          <p className="text-sm text-muted-foreground leading-relaxed">{issue.description}</p>
+        <div className="space-y-2 border-t border-gray-200 px-4 pb-4 pt-3">
+          <p className="text-sm leading-relaxed text-gray-600">{issue.description}</p>
           {issue.fix && (
-            <div className="rounded-md bg-muted/60 px-3 py-2">
-              <p className="text-xs font-semibold text-foreground mb-1">Fix</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">{issue.fix}</p>
+            <div className="rounded-md bg-white px-3 py-2">
+              <p className="mb-1 text-xs font-semibold text-gray-900">Fix</p>
+              <p className="text-xs leading-relaxed text-gray-600">{issue.fix}</p>
             </div>
           )}
         </div>

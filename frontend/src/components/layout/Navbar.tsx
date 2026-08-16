@@ -1,6 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,11 +8,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Code2, History, LogOut, Sparkles } from "lucide-react";
+import { History, LogOut, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import BrandMark from "./BrandMark";
 
 const NAV_LINKS = [
-  { to: "/review",   label: "Review"  },
+  { to: "/review",  label: "Review"  },
   { to: "/history", label: "History" },
 ];
 
@@ -28,40 +28,38 @@ export default function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
+    <header className="sticky top-0 z-50 h-12 shrink-0 border-b border-gray-200 bg-white">
+      <div className="relative mx-auto flex h-12 max-w-7xl items-center justify-between px-4 sm:px-6">
 
-        <Link to="/" className="flex items-center gap-2 font-semibold tracking-tight">
-          <div className="flex size-7 items-center justify-center rounded-md bg-primary">
-            <Code2 className="size-4 text-primary-foreground" />
-          </div>
-          <span className="text-sm">
-            CodeReview<span className="text-primary">AI</span>
-          </span>
+        <Link to="/" className="relative z-10">
+          <BrandMark />
         </Link>
 
-        <nav className="hidden sm:flex items-center gap-1">
-          {NAV_LINKS.map(({ to, label }) => (
-            <Link key={to} to={to}>
-              <Button
-                variant="ghost"
-                size="sm"
-                className={cn(
-                  "text-muted-foreground",
-                  location.pathname === to && "text-foreground bg-accent"
-                )}
-              >
-                {label}
-              </Button>
-            </Link>
-          ))}
+        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-2 sm:flex">
+          {NAV_LINKS.map(({ to, label }) => {
+            const active = location.pathname === to || (to === "/history" && location.pathname.startsWith("/history"));
+            return (
+              <Link key={to} to={to}>
+                <span
+                  className={cn(
+                    "inline-flex items-center justify-center rounded-[5px] px-2 py-0.5 text-xs tracking-tight",
+                    active
+                      ? "bg-gray-100 font-medium text-gray-900"
+                      : "text-[#aaa]"
+                  )}
+                >
+                  {label}
+                </span>
+              </Link>
+            );
+          })}
         </nav>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="rounded-full outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring">
-              <Avatar className="size-8">
-                <AvatarFallback className="text-xs bg-primary text-primary-foreground">
+            <button className="relative z-10 rounded-full outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring">
+              <Avatar className="size-8 after:hidden">
+                <AvatarFallback className="bg-black text-sm font-medium text-white">
                   {user?.username?.[0]?.toUpperCase() ?? "U"}
                 </AvatarFallback>
               </Avatar>

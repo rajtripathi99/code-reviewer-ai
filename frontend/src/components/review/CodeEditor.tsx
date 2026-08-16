@@ -31,13 +31,12 @@ export default function CodeEditor({ value, onChange, placeholder = "Paste your 
   }
 
   return (
-    <div className="flex h-full w-full overflow-hidden rounded-lg border bg-muted/30 font-mono text-sm">
+    <div className="flex h-full w-full overflow-hidden rounded-[10px] border border-gray-200 bg-gray-50 font-mono text-sm">
       {/* Line numbers — scrolls in sync with textarea */}
       <div
         ref={lineNumRef}
         aria-hidden
-        className="shrink-0 select-none overflow-hidden border-r bg-muted/50 py-4 text-right text-xs leading-6 text-muted-foreground/50"
-        style={{ minWidth: "3rem", paddingLeft: "0.5rem", paddingRight: "0.5rem" }}
+        className="w-7 shrink-0 select-none overflow-hidden border-r border-gray-200 py-3 text-center text-[10px] leading-5 text-gray-400"
       >
         {Array.from({ length: lineCount }, (_, i) => (
           <div key={i + 1}>{i + 1}</div>
@@ -54,9 +53,9 @@ export default function CodeEditor({ value, onChange, placeholder = "Paste your 
         placeholder={placeholder}
         spellCheck={false}
         className={cn(
-          "h-full w-full resize-none bg-transparent px-4 py-4 text-sm leading-6",
-          "placeholder:text-muted-foreground/40 focus:outline-none",
-          "text-foreground caret-primary overflow-auto"
+          "h-full w-full resize-none bg-transparent px-3 py-3 text-sm leading-5",
+          "placeholder:text-gray-400 focus:outline-none",
+          "text-foreground caret-black overflow-auto"
         )}
         style={{ fontFamily: "inherit", tabSize: 2 }}
       />

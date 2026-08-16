@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import ScoreRing   from "./ScoreRing";
 import IssueCard   from "./IssueCard";
 import MetricsGrid from "./MetricsGrid";
+import zapIcon     from "@/assets/icon-zap.svg";
 
 type ReviewStatus = "idle" | "loading" | "streaming" | "done" | "error";
 
@@ -99,14 +100,12 @@ export default function ReviewPanel({ reviewStatus, result, rawChunks = "", erro
 
   if (reviewStatus === "idle") {
     return (
-      <div className="flex h-full flex-col items-center justify-center gap-3 p-8 text-center">
-        <div className="size-12 rounded-2xl bg-muted flex items-center justify-center">
-          <span className="text-2xl">⚡</span>
-        </div>
-        <div>
-          <p className="text-sm font-medium">No review yet</p>
-          <p className="text-xs text-muted-foreground mt-1">Paste your code and hit Review</p>
-        </div>
+      <div className="flex h-full flex-col items-center justify-center gap-1.5 p-8 text-center">
+        <span className="flex size-6 items-center justify-center overflow-clip">
+          <img src={zapIcon} alt="" width={24} height={24} className="size-full object-contain" />
+        </span>
+        <p className="text-xs font-medium tracking-tight text-gray-950">No reviews yet</p>
+        <p className="text-xs font-medium tracking-tight text-gray-400">Paste your code and hit Review</p>
       </div>
     );
   }
@@ -131,33 +130,39 @@ export default function ReviewPanel({ reviewStatus, result, rawChunks = "", erro
   const warningCount  = result.issues?.filter((i) => i.severity === "warning").length  ?? 0;
 
   return (
-    <div className="space-y-4 p-3 sm:p-4 max-w-full overflow-hidden">
-      <div className="flex flex-col sm:flex-row sm:items-start items-center text-center sm:text-left gap-4 rounded-xl border bg-card p-4">
-        <ScoreRing score={result.score ?? 0} />
-        <div className="flex-1 min-w-0">
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-            <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">{result.language}</span>
-            {criticalCount > 0 && (
-              <span className="rounded-md bg-red-500/10 px-2 py-0.5 text-xs font-medium text-red-500">{criticalCount} critical</span>
-            )}
-            {warningCount > 0 && (
-              <span className="rounded-md bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-500">{warningCount} warnings</span>
-            )}
+    <div className="max-w-full space-y-4 overflow-hidden p-4">
+      <div className="flex flex-col gap-4">
+        <div className="flex items-start gap-4 overflow-hidden rounded-[10px] border border-gray-200 bg-gray-50 p-4">
+          <ScoreRing score={result.score ?? 0} />
+          <div className="flex min-w-0 flex-1 flex-col gap-2">
+            <div className="flex flex-wrap items-center gap-1.5">
+              {result.language && (
+                <span className="rounded-[10px] bg-gray-100 px-2 py-0.5 text-xs tracking-tight text-gray-700">{result.language}</span>
+              )}
+              {criticalCount > 0 && (
+                <span className="rounded-[10px] bg-red-100 px-2 py-0.5 text-xs tracking-tight text-red-500">{criticalCount} critical</span>
+              )}
+              {warningCount > 0 && (
+                <span className="rounded-[10px] bg-yellow-100 px-2 py-0.5 text-xs tracking-tight text-yellow-500">{warningCount} warning{warningCount !== 1 ? "s" : ""}</span>
+              )}
+            </div>
+            <p className="text-sm leading-5 tracking-tight text-gray-600">{result.summary}</p>
           </div>
-          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{result.summary}</p>
         </div>
+
+        {result.metrics && <MetricsGrid metrics={result.metrics} />}
       </div>
 
-      {result.metrics && <MetricsGrid metrics={result.metrics} />}
-
       {result.issues?.length > 0 && (
-        <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <div className="flex flex-col gap-2">
+          <p className="text-sm font-medium tracking-tight text-black">
             Issues ({result.issues.length})
           </p>
-          {result.issues.map((issue) => (
-            <IssueCard key={issue.id} issue={issue} />
-          ))}
+          <div className="flex flex-col gap-2">
+            {result.issues.map((issue) => (
+              <IssueCard key={issue.id} issue={issue} />
+            ))}
+          </div>
         </div>
       )}
 

@@ -5,7 +5,7 @@ import { useAuth }  from "../context/AuthContext";
 import { Button }   from "@/components/ui/button";
 import { Input }    from "@/components/ui/input";
 import { Label }    from "@/components/ui/label";
-import { Code2 }    from "lucide-react";
+import BrandMark from "../components/layout/BrandMark";
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -38,9 +38,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm space-y-6">
 
         <div className="flex flex-col items-center gap-2 text-center">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-primary">
-            <Code2 className="size-5 text-primary-foreground" />
-          </div>
+          <BrandMark size="lg" showWordmark={false} />
           <h1 className="text-xl font-semibold">Create an account</h1>
           <p className="text-sm text-muted-foreground">Start reviewing your code with AI</p>
         </div>

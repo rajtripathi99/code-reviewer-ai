@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Code2, Sparkles, ShieldCheck, Zap, BookOpen, ArrowRight } from "lucide-react";
+import { Sparkles, ShieldCheck, Zap, BookOpen, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import BrandMark from "../components/layout/BrandMark";
 
 const FEATURES = [
   {
@@ -44,11 +45,8 @@ export default function LandingPage() {
       {/* Navbar */}
       <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <Link to="/" className="flex items-center gap-2 font-semibold tracking-tight">
-            <div className="flex size-7 items-center justify-center rounded-md bg-primary">
-              <Code2 className="size-4 text-primary-foreground" />
-            </div>
-            <span className="text-sm">CodeReview<span className="text-primary">AI</span></span>
+          <Link to="/">
+            <BrandMark />
           </Link>
 
           <div className="flex items-center gap-2">
@@ -230,12 +228,9 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 py-6">
-          <div className="flex items-center gap-2">
-            <div className="flex size-5 items-center justify-center rounded bg-primary">
-              <Code2 className="size-3 text-primary-foreground" />
-            </div>
-            <span className="text-xs text-muted-foreground">CodeReviewAI</span>
-          </div>
+          <Link to="/">
+            <BrandMark size="sm" />
+          </Link>
           <p className="text-xs text-muted-foreground">Built by Raj</p>
         </div>
       </footer>

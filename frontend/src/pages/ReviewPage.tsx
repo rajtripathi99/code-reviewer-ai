@@ -7,7 +7,8 @@ import CodeEditor     from "../components/review/CodeEditor";
 import ModeSelector   from "../components/review/ModeSelector";
 import ReviewPanel    from "../components/review/ReviewPanel";
 import { useReview }  from "../hooks/useReview";
-import { Sparkles, X } from "lucide-react";
+import { X } from "lucide-react";
+import scanIcon from "@/assets/icon-scan.svg";
 
 type ReviewMode = "full" | "security" | "performance" | "clean_code" | "beginner";
 
@@ -36,19 +37,19 @@ export default function ReviewPage() {
   }
 
   return (
-    <div className="flex h-[100dvh] flex-col overflow-hidden bg-background">
+    <div className="flex h-[100dvh] flex-col overflow-hidden bg-white">
       <Navbar />
 
       <div className="flex flex-1 flex-col overflow-hidden">
 
         {/* Toolbar */}
-        <div className="border-b bg-card/50 px-3 sm:px-4 py-2 sm:py-2.5 shrink-0">
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+        <div className="h-12 shrink-0 border-b border-gray-200 bg-white px-3 sm:px-6">
+          <div className="flex h-full flex-wrap items-center gap-2">
             <ModeSelector value={mode} onChange={setMode} />
 
             <div className="ml-auto flex items-center gap-2 shrink-0">
               <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger className="h-8 w-28 sm:w-36 text-xs">
+                <SelectTrigger className="h-[26px] w-28 sm:w-36 rounded-[5px] border-gray-200 bg-gray-100 px-2 text-xs text-gray-900">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -59,7 +60,7 @@ export default function ReviewPage() {
               </Select>
 
               {reviewStatus !== "idle" && (
-                <Button variant="ghost" size="icon" className="size-8 shrink-0" onClick={handleReset}>
+                <Button variant="ghost" size="icon" className="size-8 shrink-0 text-gray-400 hover:text-gray-900" onClick={handleReset}>
                   <X className="size-4" />
                 </Button>
               )}
@@ -68,9 +69,11 @@ export default function ReviewPage() {
                 size="sm"
                 onClick={handleReview}
                 disabled={!code.trim() || isRunning}
-                className="h-8 gap-1.5 shrink-0"
+                className="h-[30px] gap-2 shrink-0 rounded-[10px] bg-black px-2.5 text-xs text-white shadow-[0px_2px_4px_0px_rgba(0,0,0,0.08)] hover:bg-black/85"
               >
-                <Sparkles className="size-3.5" />
+                <span className="flex size-4 items-center justify-center overflow-clip">
+                  <img src={scanIcon} alt="" width={16} height={16} className="size-full object-contain" />
+                </span>
                 {isRunning ? "Reviewing…" : "Review"}
               </Button>
             </div>
@@ -78,33 +81,34 @@ export default function ReviewPage() {
         </div>
 
         {/* Split panel */}
-        <div className="flex flex-1 flex-col lg:flex-row overflow-hidden">
+        <div className="flex flex-1 flex-col overflow-hidden lg:flex-row">
 
           {/* Left — code editor */}
-          <div className="flex w-full lg:w-1/2 flex-col overflow-hidden border-b lg:border-b-0 lg:border-r p-3 sm:p-4 min-h-[35vh] lg:min-h-0">
-            <div className="mb-2 flex items-center justify-between shrink-0">
-              <span className="text-xs font-medium text-muted-foreground">Code</span>
-              {code && (
-                <span className="text-xs text-muted-foreground">
-                  {code.split("\n").length} lines
-                </span>
-              )}
-            </div>
-            <div className="flex-1 overflow-hidden">
+          <div className="flex min-h-[35vh] w-full flex-col overflow-hidden border-b border-gray-200 p-4 lg:min-h-0 lg:w-1/2 lg:border-b-0 lg:border-r">
+            <div className="min-h-0 flex-1 overflow-hidden">
               <CodeEditor value={code} onChange={setCode} />
             </div>
           </div>
 
           {/* Right — review results */}
-          <div className="flex w-full lg:w-1/2 flex-col overflow-hidden min-h-[40vh] lg:min-h-0">
-            <ScrollArea className="h-full">
+          <div className="flex min-h-[40vh] w-full flex-col overflow-hidden lg:min-h-0 lg:w-1/2">
+            {reviewStatus === "idle" ? (
               <ReviewPanel
                 reviewStatus={reviewStatus}
                 result={result}
                 rawChunks={rawChunks}
                 error={error}
               />
-            </ScrollArea>
+            ) : (
+              <ScrollArea className="h-full">
+                <ReviewPanel
+                  reviewStatus={reviewStatus}
+                  result={result}
+                  rawChunks={rawChunks}
+                  error={error}
+                />
+              </ScrollArea>
+            )}
           </div>
 
         </div>

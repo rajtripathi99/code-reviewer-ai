@@ -17,16 +17,16 @@ interface Props {
 
 export default function ModeSelector({ value, onChange }: Props) {
   return (
-    <div className="flex flex-wrap gap-1 sm:gap-1.5">
+    <div className="flex flex-wrap gap-2">
       {MODES.map((mode) => (
         <button
           key={mode.value}
           onClick={() => onChange(mode.value)}
           className={cn(
-            "rounded-md px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-medium transition-all whitespace-nowrap",
+            "rounded-[5px] px-2 py-0.5 text-xs tracking-tight whitespace-nowrap transition-colors",
             value === mode.value
-              ? "bg-primary text-primary-foreground shadow-sm"
-              : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+              ? "bg-gray-950 text-gray-50"
+              : "bg-gray-100 text-gray-900 hover:bg-gray-200"
           )}
         >
           {mode.label}
